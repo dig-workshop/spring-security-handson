@@ -1,0 +1,7 @@
+export DATABASE_HOST="localhost:5432"
+export DATABASE_NAME="security"
+export DATABASE_USERNAME="user"
+export DATABASE_PASSWORD="password"
+export GOOGLE_CLIENT_ID=""
+export GOOGLE_CLIENT_SECRET=""
+export GOOGLE_REDIRECT_URI="http://localhost:8080/login/oauth2/code/google"
