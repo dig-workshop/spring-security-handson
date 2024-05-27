@@ -1,7 +1,6 @@
 package com.security.server.auth
 
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.OidcLoginRequestPostProcessor
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*
 
 class AuthHelper {
     companion object {
@@ -14,6 +13,16 @@ class AuthHelper {
                     it.claim("sub", sub)
                         .claim("name", name)
                 }
+        }
+
+        fun jwtUser(
+            sub: String = "sample-subject",
+            name: String = "sample-name",
+        ): JwtRequestPostProcessor {
+            return jwt().jwt {
+                it.claim("sub", sub)
+                    .claim("name", name)
+            }
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.security.server.auth
 
+import com.security.server.auth.AuthHelper.Companion.jwtUser
 import com.security.server.auth.AuthHelper.Companion.oidcUser
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -28,19 +30,40 @@ class UserControllerTests {
 		result.andExpect { status { isUnauthorized() } }
 	}
 
-	@Test
-	fun 認証済みの場合はサービスに正しい引数を渡す() {
-		val spyUserService = SpyUserService()
-		val mockMvc = buildMvcWith(spyUserService)
-		val oidcUser = oidcUser("subject", "Tanachu")
+	@Nested
+	inner class OAuth2Login {
+		@Test
+		fun 認証済みの場合はサービスに正しい引数を渡す() {
+			val spyUserService = SpyUserService()
+			val mockMvc = buildMvcWith(spyUserService)
+			val oidcUser = oidcUser("subject", "Tanachu")
 
-		mockMvc.get("/api/users/me") {
-			with(oidcUser)
+			mockMvc.get("/api/users/me") {
+				with(oidcUser)
+			}
+
+
+			assertEquals("subject", spyUserService.createOrGet_argument_sub)
+			assertEquals("Tanachu", spyUserService.createOrGet_argument_name)
 		}
+	}
+
+	@Nested
+	inner class BearerToken {
+		@Test
+		fun 認証済みの場合はサービスに正しい引数を渡す() {
+			val spyUserService = SpyUserService()
+			val mockMvc = buildMvcWith(spyUserService)
+			val jwt = jwtUser("subject", "Tanachu")
+
+			mockMvc.get("/api/users/me") {
+				with(jwt)
+			}
 
 
-		assertEquals("subject", spyUserService.createOrGet_argument_sub)
-		assertEquals("Tanachu", spyUserService.createOrGet_argument_name)
+			assertEquals("subject", spyUserService.createOrGet_argument_sub)
+			assertEquals("Tanachu", spyUserService.createOrGet_argument_name)
+		}
 	}
 
 	@Test
@@ -48,11 +71,11 @@ class UserControllerTests {
 		val stubUserService = StubUserService()
 		stubUserService.createOrGet_returnValue = UserResponse(name = "Yusuke")
 		val mockMvc = buildMvcWith(stubUserService)
-		val oidcUser = oidcUser()
+		val user = oidcUser()
 
 
 		val result = mockMvc.get("/api/users/me") {
-			with(oidcUser)
+			with(user)
 		}
 
 
