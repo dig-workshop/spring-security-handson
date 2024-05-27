@@ -16,14 +16,19 @@ class SecurityConfig {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
+            .csrf { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers("/api/users/me").authenticated()
+                it.requestMatchers( "/logout", "/error").permitAll()
             }
             .oauth2Login {
-                it.defaultSuccessUrl("http://localhost:5173")
+                it.defaultSuccessUrl("http://localhost:5173", true)
             }
             .exceptionHandling {
                 it.authenticationEntryPoint(CustomAuthenticationEntryPoint())
+            }
+            .logout {
+                it.logoutSuccessUrl("http://localhost:5173")
             }
         return http.build()
     }
@@ -37,6 +42,5 @@ class CustomAuthenticationEntryPoint: AuthenticationEntryPoint {
     ) {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
     }
-
 }
 

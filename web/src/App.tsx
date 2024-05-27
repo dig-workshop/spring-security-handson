@@ -11,7 +11,7 @@ export default function App() {
     return (
         <UserProvider authRepository={authRepository}>
             <Authorized>
-                <MainScreen authRepository={authRepository}/>
+                <MainScreen/>
             </Authorized>
             <Unauthorized>
                 <LoginScreen/>

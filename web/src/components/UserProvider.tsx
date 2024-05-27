@@ -14,7 +14,10 @@ export default function UserProvider(
 
     useEffect(() => {
         props.authRepository.getUser()
-            .then(user => setUser(user))
+            .then(user => {
+                setUser(user)
+            })
+            .catch(error => console.log(error))
     }, [])
 
     return (
