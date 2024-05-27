@@ -1,5 +1,6 @@
 package com.security.server.auth
 
+import com.security.server.auth.AuthHelper.Companion.oidcUser
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -7,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
@@ -29,5 +31,22 @@ class SecurityConfigTests {
 
         val oauth2LoginFilter = filters.any { it is OAuth2LoginAuthenticationFilter }
         assertTrue(oauth2LoginFilter, "OAuth2LoginAuthenticationFilter should be present in the filter chain")
+    }
+
+    @Test
+    fun ログアウト成功後のリダイレクト先が正しく設定されている() {
+        val mockMvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
+            .build()
+
+
+        mockMvc.post("/logout") {
+            with(oidcUser())
+        }
+        .andExpect {
+            status { is3xxRedirection() }
+            redirectedUrl("http://localhost:5173")
+        }
     }
 }
