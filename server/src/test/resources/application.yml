@@ -1,3 +1,8 @@
+app:
+  jwt:
+    secret: "hoge"
+    expiration-time: 3600
+    issuer: "https://hoge.com"
 spring:
   security:
     oauth2:
