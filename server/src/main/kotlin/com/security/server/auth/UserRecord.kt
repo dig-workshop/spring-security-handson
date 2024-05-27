@@ -8,6 +8,6 @@ import java.util.*
 data class UserRecord(
     @Id
     val id: UUID = UUID.randomUUID(),
-    val oid: String,
+    val subject: String,
     val username: String,
 )

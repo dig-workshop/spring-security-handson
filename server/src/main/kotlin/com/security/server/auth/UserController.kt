@@ -14,11 +14,8 @@ class UserController(
     @GetMapping("/me")
     fun me(authentication: Authentication): UserResponse {
         val principal = authentication.principal as OidcUser
-        println("===========================================")
-        println(principal)
-        println("===========================================")
         return userService.createOrGet(
-            oid = principal.subject,
+            sub = principal.subject,
             name = principal.getClaimAsString("name"),
         )
     }

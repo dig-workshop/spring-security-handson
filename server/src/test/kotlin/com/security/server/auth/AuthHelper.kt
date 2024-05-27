@@ -6,13 +6,12 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 class AuthHelper {
     companion object {
         fun oidcUser(
-            name: String = "subject",
-            oid: String = "oid",
+            sub: String = "sample-subject",
+            name: String = "sample-name",
         ): OidcLoginRequestPostProcessor {
             return oidcLogin()
                 .idToken {
-                    it.claim("sub", name)
-                        .claim("oid", oid)
+                    it.claim("sub", sub)
                         .claim("name", name)
                 }
         }

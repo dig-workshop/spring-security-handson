@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserRepository: JpaRepository<UserRecord, Long> {
-    fun findByOid(oid: String): UserRecord?
+    fun findBySubject(sub: String): UserRecord?
 }

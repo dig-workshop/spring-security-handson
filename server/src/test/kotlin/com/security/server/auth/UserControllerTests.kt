@@ -32,14 +32,14 @@ class UserControllerTests {
 	fun 認証済みの場合はサービスに正しい引数を渡す() {
 		val spyUserService = SpyUserService()
 		val mockMvc = buildMvcWith(spyUserService)
-		val oidcUser = oidcUser("Tanachu", "example-oid")
+		val oidcUser = oidcUser("subject", "Tanachu")
 
 		mockMvc.get("/api/users/me") {
 			with(oidcUser)
 		}
 
 
-		assertEquals("example-oid", spyUserService.createOrGet_argument_oid)
+		assertEquals("subject", spyUserService.createOrGet_argument_sub)
 		assertEquals("Tanachu", spyUserService.createOrGet_argument_name)
 	}
 
