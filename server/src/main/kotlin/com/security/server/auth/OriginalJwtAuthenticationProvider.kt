@@ -12,7 +12,7 @@ class OriginalJwtAuthenticationProvider(
         val accessToken = (authentication as OriginalJwtAuthentication).credentials
         try {
             val userRecord = jwtDecoder.decode(accessToken)
-            val authenticatedToken = OriginalJwtAuthentication("", userRecord)
+            val authenticatedToken = OriginalJwtAuthentication.authenticated(userRecord)
             authenticatedToken.isAuthenticated = true
             return authenticatedToken
         } catch(exception: Exception) {

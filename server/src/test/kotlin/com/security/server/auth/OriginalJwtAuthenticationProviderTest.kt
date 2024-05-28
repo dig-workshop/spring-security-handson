@@ -23,7 +23,7 @@ class OriginalJwtAuthenticationProviderTest {
             val authenticationProvider = OriginalJwtAuthenticationProvider(stubDecoder)
 
 
-            val unauthenticatedToken = OriginalJwtAuthentication("access token", UserRecord(subject = "", username = ""))
+            val unauthenticatedToken = OriginalJwtAuthentication.unauthenticated("access token")
             val authenticatedToken = authenticationProvider.authenticate(unauthenticatedToken)
 
 
@@ -38,7 +38,7 @@ class OriginalJwtAuthenticationProviderTest {
             val authenticationProvider = OriginalJwtAuthenticationProvider(spyDecoder)
 
 
-            val unauthenticatedToken = OriginalJwtAuthentication("access token", UserRecord(subject = "", username = ""))
+            val unauthenticatedToken = OriginalJwtAuthentication.unauthenticated("access token")
             authenticationProvider.authenticate(unauthenticatedToken)
 
 
@@ -51,7 +51,7 @@ class OriginalJwtAuthenticationProviderTest {
             val authenticationProvider = OriginalJwtAuthenticationProvider(alwaysErrorUserRecordJwtDecoder)
 
 
-            val unauthenticatedToken = OriginalJwtAuthentication("", UserRecord(subject = "", username = ""))
+            val unauthenticatedToken = OriginalJwtAuthentication.unauthenticated("")
             val exception = assertThrows<BadCredentialsException> { authenticationProvider.authenticate(unauthenticatedToken) }
 
 

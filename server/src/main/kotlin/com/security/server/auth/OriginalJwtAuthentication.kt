@@ -26,4 +26,20 @@ data class OriginalJwtAuthentication(
     override fun setAuthenticated(isAuthenticated: Boolean) {
         this.isAuthenticated = isAuthenticated
     }
+
+    companion object {
+        fun authenticated(userRecord: UserRecord): OriginalJwtAuthentication {
+            return OriginalJwtAuthentication(
+                credentials = "",
+                principal = userRecord
+            )
+        }
+
+        fun unauthenticated(accessToken: String): OriginalJwtAuthentication {
+            return OriginalJwtAuthentication(
+                credentials = accessToken,
+                principal = UserRecord(subject = "", username = "")
+            )
+        }
+    }
 }
