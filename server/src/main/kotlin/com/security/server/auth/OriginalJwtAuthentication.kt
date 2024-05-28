@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
-data class UserRecordJwtAuthenticationToken(
+data class OriginalJwtAuthentication(
     private val credentials: String,
     private val principal: UserRecord,
 ): Authentication {

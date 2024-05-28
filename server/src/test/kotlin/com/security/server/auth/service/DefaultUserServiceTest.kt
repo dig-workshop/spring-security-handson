@@ -2,9 +2,9 @@ package com.security.server.auth.service
 
 import com.security.server.auth.entity.UserRecord
 import com.security.server.auth.UserRepository
-import com.security.server.auth.coder.DummyUserRecordJwtEncoder
-import com.security.server.auth.coder.SpyUserRecordJwtEncoder
-import com.security.server.auth.coder.StubUserRecordJwtEncoder
+import com.security.server.auth.coder.DummyOriginalJwtEncoder
+import com.security.server.auth.coder.SpyOriginalJwtEncoder
+import com.security.server.auth.coder.StubOriginalJwtEncoder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,7 +31,7 @@ class DefaultUserServiceTest {
             ),
         )
         userRepository.saveAll(userRecords)
-        val userService = DefaultUserService(userRepository, DummyUserRecordJwtEncoder())
+        val userService = DefaultUserService(userRepository, DummyOriginalJwtEncoder())
 
 
         val userResponse = userService.createOrGet("subject2", "")
@@ -43,7 +43,7 @@ class DefaultUserServiceTest {
     @Test
     fun ユーザーが存在していなければIDとユーザー名を保存する() {
         userRepository.deleteAll()
-        val userService = DefaultUserService(userRepository, DummyUserRecordJwtEncoder())
+        val userService = DefaultUserService(userRepository, DummyOriginalJwtEncoder())
 
 
         userService.createOrGet("subject", "new user")
@@ -60,7 +60,7 @@ class DefaultUserServiceTest {
         val savedUserRecord = userRepository.save(
             UserRecord(UUID.randomUUID(), "subject", "saved user")
         )
-        val spyJwtEncoder = SpyUserRecordJwtEncoder()
+        val spyJwtEncoder = SpyOriginalJwtEncoder()
         val userService = DefaultUserService(userRepository, spyJwtEncoder)
 
 
@@ -74,7 +74,7 @@ class DefaultUserServiceTest {
 
     @Test
     fun JwtEncoderによって生成されたアクセストークンを返す() {
-        val stubJwtEncoder = StubUserRecordJwtEncoder()
+        val stubJwtEncoder = StubOriginalJwtEncoder()
         stubJwtEncoder.encode_returnValue = "access token"
         val userService = DefaultUserService(userRepository, stubJwtEncoder)
 

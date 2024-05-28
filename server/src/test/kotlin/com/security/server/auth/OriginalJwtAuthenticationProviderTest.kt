@@ -1,9 +1,9 @@
 package com.security.server.auth
 
-import com.security.server.auth.coder.AlwaysErrorUserRecordJwtDecoder
-import com.security.server.auth.coder.DummyUserRecordJwtDecoder
-import com.security.server.auth.coder.SpyUserRecordJwtDecoder
-import com.security.server.auth.coder.StubUserRecordJwtDecoder
+import com.security.server.auth.coder.AlwaysErrorOriginalJwtDecoder
+import com.security.server.auth.coder.DummyOriginalJwtDecoder
+import com.security.server.auth.coder.SpyOriginalJwtDecoder
+import com.security.server.auth.coder.StubOriginalJwtDecoder
 import com.security.server.auth.entity.UserRecord
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Nested
@@ -12,18 +12,18 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken
 
-class UserRecordJwtAuthProviderTest {
+class OriginalJwtAuthenticationProviderTest {
     @Nested
     inner class Authenticate {
         @Test
         fun JwtDecoderの返り値がprincipalに入ったUserRecordJwtAuthenticationTokenを返す() {
-            val stubDecoder = StubUserRecordJwtDecoder()
+            val stubDecoder = StubOriginalJwtDecoder()
             val expectedPrincipal = UserRecord(subject = "subject", username = "user name")
             stubDecoder.decode_returnValue = expectedPrincipal
-            val authenticationProvider = UserRecordJwtAuthProvider(stubDecoder)
+            val authenticationProvider = OriginalJwtAuthenticationProvider(stubDecoder)
 
 
-            val unauthenticatedToken = UserRecordJwtAuthenticationToken("access token", UserRecord(subject = "", username = ""))
+            val unauthenticatedToken = OriginalJwtAuthentication("access token", UserRecord(subject = "", username = ""))
             val authenticatedToken = authenticationProvider.authenticate(unauthenticatedToken)
 
 
@@ -34,11 +34,11 @@ class UserRecordJwtAuthProviderTest {
 
         @Test
         fun Authenticationからアクセストークンを取り出してJwtDecoderに渡す() {
-            val spyDecoder = SpyUserRecordJwtDecoder()
-            val authenticationProvider = UserRecordJwtAuthProvider(spyDecoder)
+            val spyDecoder = SpyOriginalJwtDecoder()
+            val authenticationProvider = OriginalJwtAuthenticationProvider(spyDecoder)
 
 
-            val unauthenticatedToken = UserRecordJwtAuthenticationToken("access token", UserRecord(subject = "", username = ""))
+            val unauthenticatedToken = OriginalJwtAuthentication("access token", UserRecord(subject = "", username = ""))
             authenticationProvider.authenticate(unauthenticatedToken)
 
 
@@ -47,11 +47,11 @@ class UserRecordJwtAuthProviderTest {
 
         @Test
         fun アクセストークンのparseに失敗したらBadCredentialExceptionを投げる() {
-            val alwaysErrorUserRecordJwtDecoder = AlwaysErrorUserRecordJwtDecoder()
-            val authenticationProvider = UserRecordJwtAuthProvider(alwaysErrorUserRecordJwtDecoder)
+            val alwaysErrorUserRecordJwtDecoder = AlwaysErrorOriginalJwtDecoder()
+            val authenticationProvider = OriginalJwtAuthenticationProvider(alwaysErrorUserRecordJwtDecoder)
 
 
-            val unauthenticatedToken = UserRecordJwtAuthenticationToken("", UserRecord(subject = "", username = ""))
+            val unauthenticatedToken = OriginalJwtAuthentication("", UserRecord(subject = "", username = ""))
             val exception = assertThrows<BadCredentialsException> { authenticationProvider.authenticate(unauthenticatedToken) }
 
 
@@ -63,10 +63,10 @@ class UserRecordJwtAuthProviderTest {
     inner class Supports {
         @Test
         fun サポートしている型を渡された場合Trueを返す() {
-            val authenticationProvider = UserRecordJwtAuthProvider(DummyUserRecordJwtDecoder())
+            val authenticationProvider = OriginalJwtAuthenticationProvider(DummyOriginalJwtDecoder())
 
 
-            val supports = authenticationProvider.supports(UserRecordJwtAuthenticationToken::class.java)
+            val supports = authenticationProvider.supports(OriginalJwtAuthentication::class.java)
 
 
             assertTrue(supports)
@@ -74,7 +74,7 @@ class UserRecordJwtAuthProviderTest {
 
         @Test
         fun サポートされていない型を渡された場合Falseを返す() {
-            val authenticationProvider = UserRecordJwtAuthProvider(DummyUserRecordJwtDecoder())
+            val authenticationProvider = OriginalJwtAuthenticationProvider(DummyOriginalJwtDecoder())
 
 
             val supports = authenticationProvider.supports(OAuth2LoginAuthenticationToken::class.java)
