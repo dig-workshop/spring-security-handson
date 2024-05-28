@@ -1,6 +1,6 @@
 app:
   jwt:
-    secret: "hoge"
+    secret: "this-is-secret-for-jwt-encode-decode-test"
     expiration-time: 3600
     issuer: "https://hoge.com"
 spring:

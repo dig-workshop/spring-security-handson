@@ -8,12 +8,12 @@ import io.jsonwebtoken.security.Keys
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 
-class OriginalJwtEncoderTests {
+class DefaultUserRecordJwtEncoderTests {
     private val testSecret = "secret-string-for-jwt-encoding-test"
 
     @Test
     fun 正しいクレームを含めて指定したシークレットを使って署名する() {
-        val sut = OriginalJwtEncoder(testSecret, 3600, "https://hoge.com")
+        val sut = DefaultUserRecordJwtEncoder(testSecret, 3600, "https://hoge.com")
         val userRecord = UserRecord(subject = "subject", username = "yusuke")
         val resultAccessToken = sut.encode(userRecord)
 

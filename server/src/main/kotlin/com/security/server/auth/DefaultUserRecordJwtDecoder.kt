@@ -6,16 +6,20 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.*
 
+interface UserRecordJwtDecoder {
+    fun decode(accessToken: String): UserRecord
+}
+
 @Component
-class OriginalJwtDecoder(
+class DefaultUserRecordJwtDecoder(
     @Value("\${app.jwt.secret}")
     private val secret: String,
     @Value("\${app.jwt.issuer}")
     private val issuer: String,
-) {
+): UserRecordJwtDecoder {
     private val key = Keys.hmacShaKeyFor(secret.toByteArray())
 
-    fun decode(accessToken: String): UserRecord {
+    override fun decode(accessToken: String): UserRecord {
         val result = Jwts.parser()
             .verifyWith(key)
             .requireIssuer(issuer)

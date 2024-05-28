@@ -6,17 +6,21 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.*
 
+interface UserRecordJwtEncoder {
+    fun encode(userRecord: UserRecord): String
+}
+
 @Component
-class OriginalJwtEncoder(
+class DefaultUserRecordJwtEncoder(
     @Value("\${app.jwt.secret}")
     private val secret: String,
     @Value("\${app.jwt.expiration-time}")
     private val expirationTime: Int,
     @Value("\${app.jwt.issuer}")
     private val issuer: String,
-) {
+): UserRecordJwtEncoder {
     private val key = Keys.hmacShaKeyFor(secret.toByteArray())
-    fun encode(userRecord: UserRecord): String {
+    override fun encode(userRecord: UserRecord): String {
         val issuedAt = System.currentTimeMillis()
         val expiresAt = issuedAt + expirationTime * 1000
         val claims = Jwts.claims()

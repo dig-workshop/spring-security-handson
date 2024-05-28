@@ -9,10 +9,12 @@ interface UserService {
 @Service
 class DefaultUserService(
     private val userRepository: UserRepository,
+    private val jwtEncoder: UserRecordJwtEncoder
 ): UserService {
     override fun createOrGet(sub: String, name: String): UserResponse {
         val userRecord = userRepository.findBySubject(sub)
             ?: userRepository.save(UserRecord(subject = sub, username = name))
-        return UserResponse(userRecord.id, userRecord.username)
+        val accessToken = jwtEncoder.encode(userRecord)
+        return UserResponse(userRecord.id, userRecord.username, accessToken)
     }
 }

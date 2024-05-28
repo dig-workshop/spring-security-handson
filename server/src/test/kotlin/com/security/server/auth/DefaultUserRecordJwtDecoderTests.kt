@@ -7,17 +7,17 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class OriginalJwtDecoderTests {
+class DefaultUserRecordJwtDecoderTests {
     val testSecret = "secret-string-for-jwt-decoding-test"
 
     @Test
     fun アクセストークンをparseしてUserRecordを返す() {
         val userRecord = UserRecord(subject = "subject", username = "yusuke")
-        val encoder = OriginalJwtEncoder(testSecret, 3600, "https://hoge.com")
+        val encoder = DefaultUserRecordJwtEncoder(testSecret, 3600, "https://hoge.com")
         val accessToken = encoder.encode(userRecord)
 
 
-        val sut = OriginalJwtDecoder(testSecret, "https://hoge.com")
+        val sut = DefaultUserRecordJwtDecoder(testSecret, "https://hoge.com")
         val result = sut.decode(accessToken)
 
 
@@ -27,12 +27,12 @@ class OriginalJwtDecoderTests {
     @Test
     fun 有効期限が切れている場合エラーを投げる() {
         val userRecord = UserRecord(subject = "subject", username = "yusuke")
-        val encoder = OriginalJwtEncoder(testSecret, 1, "https://hoge.com")
+        val encoder = DefaultUserRecordJwtEncoder(testSecret, 1, "https://hoge.com")
         val accessToken = encoder.encode(userRecord)
 
 
         Thread.sleep(1200)
-        val sut = OriginalJwtDecoder(testSecret, "https://hoge.com")
+        val sut = DefaultUserRecordJwtDecoder(testSecret, "https://hoge.com")
 
 
         assertThrows<ExpiredJwtException> { sut.decode(accessToken) }
@@ -41,11 +41,11 @@ class OriginalJwtDecoderTests {
     @Test
     fun Issuerが違う場合エラーを投げる() {
         val userRecord = UserRecord(subject = "subject", username = "yusuke")
-        val encoder = OriginalJwtEncoder(testSecret, 3600, "https://hoge.com")
+        val encoder = DefaultUserRecordJwtEncoder(testSecret, 3600, "https://hoge.com")
         val accessToken = encoder.encode(userRecord)
 
 
-        val sut = OriginalJwtDecoder(testSecret, "https://example.com")
+        val sut = DefaultUserRecordJwtDecoder(testSecret, "https://example.com")
 
 
         assertThrows<IncorrectClaimException> { sut.decode(accessToken) }
@@ -54,11 +54,11 @@ class OriginalJwtDecoderTests {
     @Test
     fun シークレットが違う場合エラーを投げる() {
         val userRecord = UserRecord(subject = "subject", username = "yusuke")
-        val encoder = OriginalJwtEncoder(testSecret + "1", 3600, "https://hoge.com")
+        val encoder = DefaultUserRecordJwtEncoder(testSecret + "1", 3600, "https://hoge.com")
         val accessToken = encoder.encode(userRecord)
 
 
-        val sut = OriginalJwtDecoder(testSecret, "https://hoge.com")
+        val sut = DefaultUserRecordJwtDecoder(testSecret, "https://hoge.com")
 
 
         assertThrows<SignatureException> { sut.decode(accessToken) }
@@ -67,11 +67,11 @@ class OriginalJwtDecoderTests {
     @Test
     fun アクセストークンが改ざんされている場合エラーを投げる() {
         val userRecord = UserRecord(subject = "subject", username = "yusuke")
-        val encoder = OriginalJwtEncoder(testSecret, 3600, "https://hoge.com")
+        val encoder = DefaultUserRecordJwtEncoder(testSecret, 3600, "https://hoge.com")
         val accessToken = encoder.encode(userRecord)
 
 
-        val sut = OriginalJwtDecoder(testSecret, "https://hoge.com")
+        val sut = DefaultUserRecordJwtDecoder(testSecret, "https://hoge.com")
 
 
         assertThrows<SignatureException> { sut.decode(accessToken + "a") }
