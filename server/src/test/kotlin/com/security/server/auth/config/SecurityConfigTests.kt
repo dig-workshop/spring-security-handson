@@ -1,6 +1,8 @@
 package com.security.server.auth.config
 
 import com.security.server.auth.AuthHelper.Companion.oidcUser
+import com.security.server.auth.OriginalJwtAuthenticationFilter
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,16 +24,14 @@ class SecurityConfigTests {
 
     @Test
     fun oAuth2Loginが有効になっている() {
-        MockMvcBuilders
-            .webAppContextSetup(context)
-            .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
-            .build()
+        val authFilterChain = context.getBean("authSecurityFilterChain", SecurityFilterChain::class.java)
+        val appFilterChain = context.getBean("appSecurityFilterChain", SecurityFilterChain::class.java)
 
-        val filterChain = context.getBean(SecurityFilterChain::class.java)
-        val filters = filterChain.filters
 
-        val filterExists = filters.any { it is OAuth2LoginAuthenticationFilter }
-        assertTrue(filterExists, "OAuth2LoginAuthenticationFilter should be present in the filter chain")
+        val filterExistsInAuth = authFilterChain.filters.any { it is OAuth2LoginAuthenticationFilter }
+        val filterExistsInApp = appFilterChain.filters.any { it is OAuth2LoginAuthenticationFilter }
+        assertTrue(filterExistsInAuth, "OAuth2LoginAuthenticationFilter should be present in the auth filter chain")
+        assertFalse(filterExistsInApp, "OAuth2LoginAuthenticationFilter should not be present in the app filter chain")
     }
 
     @Test
@@ -53,17 +53,25 @@ class SecurityConfigTests {
 
     @Test
     fun jwt認証が有効になっている() {
-         MockMvcBuilders
-             .webAppContextSetup(context)
-             .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
-             .build()
+        val authFilterChain = context.getBean("authSecurityFilterChain", SecurityFilterChain::class.java)
+        val appFilterChain = context.getBean("appSecurityFilterChain", SecurityFilterChain::class.java)
 
 
-        val filterChain = context.getBean(SecurityFilterChain::class.java)
-        val filters = filterChain.filters
+        val filterExistsInAuth = authFilterChain.filters.any { it is BearerTokenAuthenticationFilter }
+        val filterExistsInApp = appFilterChain.filters.any { it is BearerTokenAuthenticationFilter }
+        assertTrue(filterExistsInAuth, "BearerTokenAuthenticationFilter should be present in the auth filter chain")
+        assertFalse(filterExistsInApp, "BearerTokenAuthenticationFilter should not be present in the app filter chain")
+    }
+
+    @Test
+    fun OriginalJwtAuthenticationFilterが有効になっている() {
+        val authFilterChain = context.getBean("authSecurityFilterChain", SecurityFilterChain::class.java)
+        val appFilterChain = context.getBean("appSecurityFilterChain", SecurityFilterChain::class.java)
 
 
-        val filterExists = filters.any { it is BearerTokenAuthenticationFilter }
-        assertTrue(filterExists, "BearerTokenAuthenticationFilter should be present in the filter chain")
+        val filterExistsInAuth = authFilterChain.filters.any { it is OriginalJwtAuthenticationFilter }
+        val filterExistsInApp = appFilterChain.filters.any { it is OriginalJwtAuthenticationFilter }
+        assertFalse(filterExistsInAuth, "OriginalJwtAuthenticationFilter should not be present in the auth filter chain")
+        assertTrue(filterExistsInApp, "OriginalJwtAuthenticationFilter should be present in the app filter chain")
     }
 }

@@ -1,6 +1,6 @@
 app:
   jwt:
-    secret: "hoge"
+    secret: "t6PdFmBbia3rZVk9ecbHTufjtwnb95JW"
     expiration-time: 3600
     issuer: "https://hoge.com"
 spring:

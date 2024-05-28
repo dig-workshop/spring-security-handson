@@ -28,7 +28,7 @@ class UserControllerTests {
 	fun 未認証の場合401を返す() {
 		val dummyUserService = DummyUserService()
 		val mockMvc = buildMvcWith(dummyUserService)
-		val result = mockMvc.get("/api/users/me")
+		val result = mockMvc.get("/auth/api/users/me")
 
 
 		result.andExpect { status { isUnauthorized() } }
@@ -42,7 +42,7 @@ class UserControllerTests {
 			val mockMvc = buildMvcWith(spyUserService)
 			val oidcUser = oidcUser("subject", "Tanachu")
 
-			mockMvc.get("/api/users/me") {
+			mockMvc.get("/auth/api/users/me") {
 				with(oidcUser)
 			}
 
@@ -60,7 +60,7 @@ class UserControllerTests {
 			val mockMvc = buildMvcWith(spyUserService)
 			val jwt = jwtUser("subject", "Tanachu")
 
-			mockMvc.get("/api/users/me") {
+			mockMvc.get("/auth/api/users/me") {
 				with(jwt)
 			}
 
@@ -78,7 +78,7 @@ class UserControllerTests {
 		val user = oidcUser()
 
 
-		val result = mockMvc.get("/api/users/me") {
+		val result = mockMvc.get("/auth/api/users/me") {
 			with(user)
 		}
 

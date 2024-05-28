@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/auth/api/users")
 class UserController(
     private val userService: UserService,
 ) {

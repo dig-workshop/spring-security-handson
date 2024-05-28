@@ -1,25 +1,32 @@
 package com.security.server.auth.config
 
+import com.security.server.auth.OriginalJwtAuthenticationFilter
+import com.security.server.auth.OriginalJwtAuthenticationProvider
+import com.security.server.auth.coder.OriginalJwtDecoder
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.AuthenticationProvider
+import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig {
     @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http
+    fun authSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http.securityMatcher("/oauth2/authorization/**", "/login/oauth2/**", "/auth/api/users/me", "/logout")
             .csrf { it.disable() }
             .authorizeHttpRequests {
-                it.requestMatchers("/api/users/me").authenticated()
-                it.requestMatchers( "/logout", "/error").permitAll()
+                it.requestMatchers("/auth/api/users/me").authenticated()
+                it.requestMatchers( "/logout").permitAll()
             }
             .oauth2Login {
                 it.defaultSuccessUrl("http://localhost:5173", true)
@@ -32,6 +39,38 @@ class SecurityConfig {
                 it.logoutSuccessUrl("http://localhost:5173")
             }
         return http.build()
+    }
+
+    @Bean
+    fun appSecurityFilterChain(
+        http: HttpSecurity,
+        authenticationManager: AuthenticationManager,
+    ): SecurityFilterChain {
+        http.securityMatcher("/api/diary")
+            .csrf { it.disable() }
+            .authorizeHttpRequests {
+                it.requestMatchers("/api/diary").authenticated()
+            }
+            .exceptionHandling {
+                it.authenticationEntryPoint(CustomAuthenticationEntryPoint())
+            }
+            .addFilterBefore(OriginalJwtAuthenticationFilter(authenticationManager), AnonymousAuthenticationFilter::class.java)
+        return http.build()
+    }
+}
+
+@Configuration
+class OriginalJwtAuthenticationConfig {
+    @Bean
+    fun originalJwtAuthenticationProvider(originalJwtDecoder: OriginalJwtDecoder): OriginalJwtAuthenticationProvider {
+        return OriginalJwtAuthenticationProvider(originalJwtDecoder)
+    }
+
+    @Bean
+    fun authenticationManager(
+        authenticationProviders: List<AuthenticationProvider>
+    ): AuthenticationManager {
+        return ProviderManager(authenticationProviders)
     }
 }
 
