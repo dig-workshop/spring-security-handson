@@ -1,5 +1,9 @@
-package com.security.server.auth
+package com.security.server.auth.service
 
+import com.security.server.auth.entity.UserRecord
+import com.security.server.auth.UserRepository
+import com.security.server.auth.UserResponse
+import com.security.server.auth.coder.UserRecordJwtEncoder
 import org.springframework.stereotype.Service
 
 interface UserService {

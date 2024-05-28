@@ -1,4 +1,4 @@
-package com.security.server.auth
+package com.security.server.auth.config
 
 import com.security.server.auth.AuthHelper.Companion.oidcUser
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter
-import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.security.web.SecurityFilterChain

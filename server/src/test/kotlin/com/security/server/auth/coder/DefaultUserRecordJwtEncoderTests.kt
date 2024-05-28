@@ -1,5 +1,6 @@
-package com.security.server.auth
+package com.security.server.auth.coder
 
+import com.security.server.auth.entity.UserRecord
 import org.junit.jupiter.api.Test
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jws

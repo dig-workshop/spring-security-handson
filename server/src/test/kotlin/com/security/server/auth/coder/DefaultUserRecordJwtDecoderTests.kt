@@ -1,5 +1,6 @@
-package com.security.server.auth
+package com.security.server.auth.coder
 
+import com.security.server.auth.entity.UserRecord
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.IncorrectClaimException
 import io.jsonwebtoken.security.SignatureException

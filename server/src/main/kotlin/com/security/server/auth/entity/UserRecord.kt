@@ -1,4 +1,4 @@
-package com.security.server.auth
+package com.security.server.auth.entity
 
 import jakarta.persistence.Entity
 import jakarta.persistence.Id

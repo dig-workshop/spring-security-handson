@@ -2,6 +2,10 @@ package com.security.server.auth
 
 import com.security.server.auth.AuthHelper.Companion.jwtUser
 import com.security.server.auth.AuthHelper.Companion.oidcUser
+import com.security.server.auth.service.DummyUserService
+import com.security.server.auth.service.SpyUserService
+import com.security.server.auth.service.StubUserService
+import com.security.server.auth.service.UserService
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested

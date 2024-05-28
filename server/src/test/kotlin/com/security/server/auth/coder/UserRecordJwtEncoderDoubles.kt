@@ -1,4 +1,6 @@
-package com.security.server.auth
+package com.security.server.auth.coder
+
+import com.security.server.auth.entity.UserRecord
 
 class DummyUserRecordJwtEncoder: UserRecordJwtEncoder {
     override fun encode(userRecord: UserRecord): String {

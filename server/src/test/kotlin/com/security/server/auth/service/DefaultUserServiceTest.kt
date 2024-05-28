@@ -1,5 +1,10 @@
-package com.security.server.auth
+package com.security.server.auth.service
 
+import com.security.server.auth.entity.UserRecord
+import com.security.server.auth.UserRepository
+import com.security.server.auth.coder.DummyUserRecordJwtEncoder
+import com.security.server.auth.coder.SpyUserRecordJwtEncoder
+import com.security.server.auth.coder.StubUserRecordJwtEncoder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

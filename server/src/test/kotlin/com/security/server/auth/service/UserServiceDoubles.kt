@@ -1,4 +1,6 @@
-package com.security.server.auth
+package com.security.server.auth.service
+
+import com.security.server.auth.UserResponse
 
 
 class DummyUserService: UserService {
