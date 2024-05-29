@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.AnonymousAuthenticationFi
 class SecurityConfig {
     @Bean
     fun authSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http.securityMatcher("/oauth2/authorization/**", "/login/oauth2/**", "/auth/api/users/me", "/logout")
+        http.securityMatcher("/oauth2/authorization/**", "/login/oauth2/code/**", "/auth/api/users/me", "/logout")
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers("/auth/api/users/me").authenticated()
@@ -46,7 +46,7 @@ class SecurityConfig {
         http: HttpSecurity,
         authenticationManager: AuthenticationManager,
     ): SecurityFilterChain {
-        http.securityMatcher("/api/diary")
+        http.securityMatcher("/api/**")
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers("/api/diary").authenticated()

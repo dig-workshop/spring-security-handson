@@ -4,35 +4,30 @@ import com.security.server.auth.AuthHelper.Companion.oidcUser
 import com.security.server.auth.OriginalJwtAuthenticationFilter
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.logout.LogoutFilter
+import org.springframework.security.web.csrf.CsrfFilter
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
+
 
 @SpringBootTest
 class SecurityConfigTests {
 
     @Autowired
     private lateinit var context: WebApplicationContext
-
-    @Test
-    fun oAuth2Loginが有効になっている() {
-        val authFilterChain = context.getBean("authSecurityFilterChain", SecurityFilterChain::class.java)
-        val appFilterChain = context.getBean("appSecurityFilterChain", SecurityFilterChain::class.java)
-
-
-        val filterExistsInAuth = authFilterChain.filters.any { it is OAuth2LoginAuthenticationFilter }
-        val filterExistsInApp = appFilterChain.filters.any { it is OAuth2LoginAuthenticationFilter }
-        assertTrue(filterExistsInAuth, "OAuth2LoginAuthenticationFilter should be present in the auth filter chain")
-        assertFalse(filterExistsInApp, "OAuth2LoginAuthenticationFilter should not be present in the app filter chain")
-    }
 
     @Test
     fun ログアウト成功後のリダイレクト先が正しく設定されている() {
@@ -51,27 +46,100 @@ class SecurityConfigTests {
         }
     }
 
-    @Test
-    fun jwt認証が有効になっている() {
-        val authFilterChain = context.getBean("authSecurityFilterChain", SecurityFilterChain::class.java)
-        val appFilterChain = context.getBean("appSecurityFilterChain", SecurityFilterChain::class.java)
+    @Nested
+    @DisplayName("認証に関わるエンドポイントに適用するSecurityFilterChain")
+    inner class AuthSecurityFilterChain {
+        private lateinit var authFilterChain: SecurityFilterChain
 
+        @BeforeEach
+        fun setUp() {
+            authFilterChain = context.getBean("authSecurityFilterChain", SecurityFilterChain::class.java)
+        }
 
-        val filterExistsInAuth = authFilterChain.filters.any { it is BearerTokenAuthenticationFilter }
-        val filterExistsInApp = appFilterChain.filters.any { it is BearerTokenAuthenticationFilter }
-        assertTrue(filterExistsInAuth, "BearerTokenAuthenticationFilter should be present in the auth filter chain")
-        assertFalse(filterExistsInApp, "BearerTokenAuthenticationFilter should not be present in the app filter chain")
+        @Test
+        fun 適切なURLパターンにマッチする() {
+            val authorizationEndpoint = MockHttpServletRequest("GET", "/oauth2/authorization/google")
+            assertTrue(authFilterChain.matches(authorizationEndpoint))
+
+            val authorizationCodeReceiveEndpoint = MockHttpServletRequest("GET", "/login/oauth2/code/google")
+            assertTrue(authFilterChain.matches(authorizationCodeReceiveEndpoint))
+
+            val userInfoEndpoint = MockHttpServletRequest("GET", "/auth/api/users/me")
+            assertTrue(authFilterChain.matches(userInfoEndpoint))
+
+            val logoutEndpoint = MockHttpServletRequest("GET", "/logout")
+            assertTrue(authFilterChain.matches(logoutEndpoint))
+
+            val appResourceEndpoint = MockHttpServletRequest("GET", "/api/hoge")
+            assertFalse(authFilterChain.matches(appResourceEndpoint))
+        }
+
+        @Test
+        fun 適切なFilterがFilterChainに追加されている() {
+            val oAuth2LoginFilterExists = authFilterChain.filters.any { it is OAuth2LoginAuthenticationFilter }
+            assertTrue(oAuth2LoginFilterExists)
+
+            val bearerTokenFilterExists = authFilterChain.filters.any { it is BearerTokenAuthenticationFilter }
+            assertTrue(bearerTokenFilterExists)
+
+            val logoutFilterExists = authFilterChain.filters.any { it is LogoutFilter }
+            assertTrue(logoutFilterExists)
+
+            val originalJwtFilterExists = authFilterChain.filters.any { it is OriginalJwtAuthenticationFilter }
+            assertFalse(originalJwtFilterExists)
+        }
+
+        @Test
+        fun CSRFフィルターが無効化されている() {
+            val csrfFilterExists = authFilterChain.filters.any { it is CsrfFilter }
+            assertFalse(csrfFilterExists)
+        }
     }
 
-    @Test
-    fun OriginalJwtAuthenticationFilterが有効になっている() {
-        val authFilterChain = context.getBean("authSecurityFilterChain", SecurityFilterChain::class.java)
-        val appFilterChain = context.getBean("appSecurityFilterChain", SecurityFilterChain::class.java)
+    @Nested
+    @DisplayName("アプリケーションのリソースに関わるエンドポイントに適用するSecurityFilterChain")
+    inner class AppSecurityFilterChain {
+        private lateinit var appFilterChain: SecurityFilterChain
 
+        @BeforeEach
+        fun setUp() {
+            appFilterChain = context.getBean("appSecurityFilterChain", SecurityFilterChain::class.java)
+        }
 
-        val filterExistsInAuth = authFilterChain.filters.any { it is OriginalJwtAuthenticationFilter }
-        val filterExistsInApp = appFilterChain.filters.any { it is OriginalJwtAuthenticationFilter }
-        assertFalse(filterExistsInAuth, "OriginalJwtAuthenticationFilter should not be present in the auth filter chain")
-        assertTrue(filterExistsInApp, "OriginalJwtAuthenticationFilter should be present in the app filter chain")
+        @Test
+        fun 適切なURLパターンにマッチする() {
+            val appResourceEndpoint = MockHttpServletRequest("GET", "/api/hoge")
+            assertTrue(appFilterChain.matches(appResourceEndpoint))
+
+            val authorizationEndpoint = MockHttpServletRequest("GET", "/oauth2/authorization/google")
+            assertFalse(appFilterChain.matches(authorizationEndpoint))
+
+            val authorizationCodeReceiveEndpoint = MockHttpServletRequest("GET", "/login/oauth2/code/google")
+            assertFalse(appFilterChain.matches(authorizationCodeReceiveEndpoint))
+
+            val userInfoEndpoint = MockHttpServletRequest("GET", "/auth/api/users/me")
+            assertFalse(appFilterChain.matches(userInfoEndpoint))
+
+            val logoutEndpoint = MockHttpServletRequest("GET", "/logout")
+            assertFalse(appFilterChain.matches(logoutEndpoint))
+        }
+
+        @Test
+        fun 適切なFilterがFilterChainに追加されている() {
+            val oauth2LoginFilterExists = appFilterChain.filters.any { it is OAuth2LoginAuthenticationFilter }
+            assertFalse(oauth2LoginFilterExists)
+
+            val bearerTokenFilterExists = appFilterChain.filters.any { it is BearerTokenAuthenticationFilter }
+            assertFalse(bearerTokenFilterExists)
+
+            val originalJwtFilterExists = appFilterChain.filters.any { it is OriginalJwtAuthenticationFilter }
+            assertTrue(originalJwtFilterExists)
+        }
+
+        @Test
+        fun CSRFフィルターが無効化されている() {
+            val csrfFilterExists = appFilterChain.filters.any { it is CsrfFilter }
+            assertFalse(csrfFilterExists)
+        }
     }
 }
