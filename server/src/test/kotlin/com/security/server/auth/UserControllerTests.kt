@@ -47,8 +47,8 @@ class UserControllerTests {
 			}
 
 
-			assertEquals("subject", spyUserService.createOrGet_argument_sub)
-			assertEquals("Tanachu", spyUserService.createOrGet_argument_name)
+			assertEquals("subject", spyUserService.createOrGet_argument_socialLoginUser?.subject)
+			assertEquals("Tanachu", spyUserService.createOrGet_argument_socialLoginUser?.name)
 		}
 	}
 
@@ -65,8 +65,8 @@ class UserControllerTests {
 			}
 
 
-			assertEquals("subject", spyUserService.createOrGet_argument_sub)
-			assertEquals("Tanachu", spyUserService.createOrGet_argument_name)
+			assertEquals("subject", spyUserService.createOrGet_argument_socialLoginUser?.subject)
+			assertEquals("Tanachu", spyUserService.createOrGet_argument_socialLoginUser?.name)
 		}
 	}
 
@@ -97,3 +97,5 @@ class UserControllerTests {
 			.build()
 	}
 }
+
+

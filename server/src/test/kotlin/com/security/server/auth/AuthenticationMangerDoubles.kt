@@ -1,5 +1,6 @@
 package com.security.server.auth
 
+import com.security.server.auth.authentication.OriginalJwtAuthentication
 import com.security.server.auth.entity.UserRecord
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException

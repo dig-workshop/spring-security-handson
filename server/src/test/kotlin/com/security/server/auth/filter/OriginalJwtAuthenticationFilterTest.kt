@@ -1,5 +1,7 @@
-package com.security.server.auth
+package com.security.server.auth.filter
 
+import com.security.server.auth.*
+import com.security.server.auth.authentication.OriginalJwtAuthentication
 import com.security.server.auth.entity.UserRecord
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test

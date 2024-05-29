@@ -1,5 +1,6 @@
-package com.security.server.auth
+package com.security.server.auth.filter
 
+import com.security.server.auth.authentication.OriginalJwtAuthentication
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

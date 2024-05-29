@@ -1,8 +1,9 @@
 package com.security.server.auth.config
 
-import com.security.server.auth.OriginalJwtAuthenticationFilter
+import com.security.server.auth.filter.OriginalJwtAuthenticationFilter
 import com.security.server.auth.OriginalJwtAuthenticationProvider
 import com.security.server.auth.coder.OriginalJwtDecoder
+import com.security.server.auth.filter.PrincipalConvertFilter
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
@@ -38,6 +39,7 @@ class SecurityConfig {
             .logout {
                 it.logoutSuccessUrl("http://localhost:5173")
             }
+            .addFilterBefore(PrincipalConvertFilter(), AnonymousAuthenticationFilter::class.java)
         return http.build()
     }
 

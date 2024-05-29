@@ -1,4 +1,4 @@
-package com.security.server.auth
+package com.security.server.auth.authentication
 
 import com.security.server.auth.entity.UserRecord
 import org.springframework.security.core.Authentication

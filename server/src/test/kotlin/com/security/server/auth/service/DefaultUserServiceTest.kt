@@ -2,6 +2,7 @@ package com.security.server.auth.service
 
 import com.security.server.auth.entity.UserRecord
 import com.security.server.auth.UserRepository
+import com.security.server.auth.authentication.SocialLoginUser
 import com.security.server.auth.coder.DummyOriginalJwtEncoder
 import com.security.server.auth.coder.SpyOriginalJwtEncoder
 import com.security.server.auth.coder.StubOriginalJwtEncoder
@@ -34,7 +35,7 @@ class DefaultUserServiceTest {
         val userService = DefaultUserService(userRepository, DummyOriginalJwtEncoder())
 
 
-        val userResponse = userService.createOrGet("subject2", "")
+        val userResponse = userService.createOrGet(SocialLoginUser("subject2", ""))
 
 
         assertEquals("correct user", userResponse.name)
@@ -46,7 +47,7 @@ class DefaultUserServiceTest {
         val userService = DefaultUserService(userRepository, DummyOriginalJwtEncoder())
 
 
-        userService.createOrGet("subject", "new user")
+        userService.createOrGet(SocialLoginUser("subject", "new user"))
         val userRecords = userRepository.findAll()
 
 
@@ -64,7 +65,7 @@ class DefaultUserServiceTest {
         val userService = DefaultUserService(userRepository, spyJwtEncoder)
 
 
-        userService.createOrGet("subject", "new user")
+        userService.createOrGet(SocialLoginUser("subject", "new user"))
 
 
         assertEquals(savedUserRecord.id, spyJwtEncoder.encode_argument_userRecord?.id)
@@ -79,7 +80,7 @@ class DefaultUserServiceTest {
         val userService = DefaultUserService(userRepository, stubJwtEncoder)
 
 
-        val userResponse = userService.createOrGet("", "")
+        val userResponse = userService.createOrGet(SocialLoginUser("", ""))
 
 
         assertEquals("access token", userResponse.accessToken)

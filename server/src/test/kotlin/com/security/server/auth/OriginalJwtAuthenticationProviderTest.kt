@@ -1,5 +1,6 @@
 package com.security.server.auth
 
+import com.security.server.auth.authentication.OriginalJwtAuthentication
 import com.security.server.auth.coder.AlwaysErrorOriginalJwtDecoder
 import com.security.server.auth.coder.DummyOriginalJwtDecoder
 import com.security.server.auth.coder.SpyOriginalJwtDecoder

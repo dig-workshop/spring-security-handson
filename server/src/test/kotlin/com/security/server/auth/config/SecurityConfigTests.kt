@@ -1,7 +1,8 @@
 package com.security.server.auth.config
 
 import com.security.server.auth.AuthHelper.Companion.oidcUser
-import com.security.server.auth.OriginalJwtAuthenticationFilter
+import com.security.server.auth.filter.OriginalJwtAuthenticationFilter
+import com.security.server.auth.filter.PrincipalConvertFilter
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -87,6 +88,9 @@ class SecurityConfigTests {
 
             val originalJwtFilterExists = authFilterChain.filters.any { it is OriginalJwtAuthenticationFilter }
             assertFalse(originalJwtFilterExists)
+
+            val convertFilterExist = authFilterChain.filters.any { it is PrincipalConvertFilter }
+            assertTrue(convertFilterExist)
         }
 
         @Test

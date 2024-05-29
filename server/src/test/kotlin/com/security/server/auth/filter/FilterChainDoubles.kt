@@ -1,4 +1,4 @@
-package com.security.server.auth
+package com.security.server.auth.filter
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletRequest
