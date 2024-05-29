@@ -1,7 +1,9 @@
 package com.security.server.auth.filter
 
-import com.security.server.auth.authentication.SocialLoginAuthentication
-import com.security.server.auth.authentication.SocialLoginUser
+import com.security.server.auth.authentication.AcquireAccessTokenAuthentication
+import com.security.server.auth.authentication.AcquireAccessTokenUser
+import com.security.server.auth.authentication.OriginalJwtAuthentication
+import com.security.server.auth.entity.UserRecord
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.mock.web.MockHttpServletRequest
@@ -14,10 +16,10 @@ import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import java.time.Instant
 
-class PrincipalConvertFilterTest {
+class AuthenticationConvertFilterTest {
     @Test
     fun authenticationがnullならそのままdoFilterを実行する() {
-        val filter = PrincipalConvertFilter()
+        val filter = AuthenticationConvertFilter()
         val mockRequest = MockHttpServletRequest()
         val mockResponse = MockHttpServletResponse()
         val spyFilterChain = SpyFilterChain()
@@ -33,8 +35,8 @@ class PrincipalConvertFilterTest {
     }
 
     @Test
-    fun JwtAuthenticationTokenをSocialLoginAuthenticationに変換してContextHolderにセットする() {
-        val filter = PrincipalConvertFilter()
+    fun JwtAuthenticationTokenをAcquireAccessTokenAuthenticationに変換してContextHolderにセットする() {
+        val filter = AuthenticationConvertFilter()
         val mockRequest = MockHttpServletRequest()
         val mockResponse = MockHttpServletResponse()
         val spyFilterChain = SpyFilterChain()
@@ -58,9 +60,9 @@ class PrincipalConvertFilterTest {
 
 
         val authentication = SecurityContextHolder.getContext().authentication
-        assertTrue(authentication is SocialLoginAuthentication)
+        assertTrue(authentication is AcquireAccessTokenAuthentication)
         assertEquals("", authentication.credentials)
-        val principal = authentication.principal as SocialLoginUser
+        val principal = authentication.principal as AcquireAccessTokenUser
         assertEquals("subject", principal.subject)
         assertEquals("user name", principal.name)
         assertEquals(mockRequest, spyFilterChain.doFilter_argument_request)
@@ -68,8 +70,8 @@ class PrincipalConvertFilterTest {
     }
 
     @Test
-    fun OAuth2AuthenticationTokenをSocialLoginAuthenticationに変換してContextHolderにセットする() {
-        val filter = PrincipalConvertFilter()
+    fun OAuth2AuthenticationTokenをAcquireAccessTokenAuthenticationに変換してContextHolderにセットする() {
+        val filter = AuthenticationConvertFilter()
         val mockRequest = MockHttpServletRequest()
         val mockResponse = MockHttpServletResponse()
         val spyFilterChain = SpyFilterChain()
@@ -91,9 +93,35 @@ class PrincipalConvertFilterTest {
 
 
         val authentication = SecurityContextHolder.getContext().authentication
-        assertTrue(authentication is SocialLoginAuthentication)
+        assertTrue(authentication is AcquireAccessTokenAuthentication)
         assertEquals("", authentication.credentials)
-        val principal = authentication.principal as SocialLoginUser
+        val principal = authentication.principal as AcquireAccessTokenUser
+        assertEquals("subject", principal.subject)
+        assertEquals("user name", principal.name)
+        assertEquals(mockRequest, spyFilterChain.doFilter_argument_request)
+        assertEquals(mockResponse, spyFilterChain.doFilter_argument_response)
+    }
+
+    @Test
+    fun OriginalJwtAuthenticationをAcquireAccessTokenAuthenticationに変換してContextHolderにセットする() {
+        val filter = AuthenticationConvertFilter()
+        val mockRequest = MockHttpServletRequest()
+        val mockResponse = MockHttpServletResponse()
+        val spyFilterChain = SpyFilterChain()
+        val context = SecurityContextHolder.getContext()
+        context.authentication = OriginalJwtAuthentication(
+            "",
+            UserRecord(subject = "subject", username = "user name")
+        )
+
+
+        filter.doFilter(mockRequest, mockResponse, spyFilterChain)
+
+
+        val authentication = SecurityContextHolder.getContext().authentication
+        assertTrue(authentication is AcquireAccessTokenAuthentication)
+        assertEquals("", authentication.credentials)
+        val principal = authentication.principal as AcquireAccessTokenUser
         assertEquals("subject", principal.subject)
         assertEquals("user name", principal.name)
         assertEquals(mockRequest, spyFilterChain.doFilter_argument_request)
