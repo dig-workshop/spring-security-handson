@@ -2,7 +2,6 @@ package com.security.server.auth.service
 
 import com.security.server.auth.UserRepository
 import com.security.server.auth.UserResponse
-import com.security.server.auth.authentication.AcquireAccessTokenUser
 import com.security.server.auth.entity.UserRecord
 import org.springframework.stereotype.Service
 
