@@ -1,0 +1,30 @@
+app:
+  jwt:
+    secret: "this-is-secret-for-jwt-encode-decode-test"
+    expiration-time: 3600
+    issuer: "https://hoge.com"
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: "https://hoge.com"
+          issuer-uri: "https://hoge.com"
+      client:
+        registration:
+          google:
+            client-id: "google-client-id"
+            client-secret: "google-client-secret"
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:security-test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false;MODE=PostgreSQL
+    username: ""
+    password: ""
+  application:
+    name: security
+  jpa:
+    hibernate:
+      ddl-auto: update
+logging:
+  level:
+    root: trace
