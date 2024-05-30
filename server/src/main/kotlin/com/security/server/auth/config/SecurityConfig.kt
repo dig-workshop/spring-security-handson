@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.AnonymousAuthenticationFi
 @EnableWebSecurity
 class SecurityConfig {
     @Bean
-    fun authSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.securityMatcher("/oauth2/authorization/**", "/login/oauth2/code/**", "/auth/api/users/me", "/logout")
             .csrf { it.disable() }
             .authorizeHttpRequests {
@@ -41,38 +41,6 @@ class SecurityConfig {
             }
             .addFilterBefore(AuthenticationConvertFilter(), AnonymousAuthenticationFilter::class.java)
         return http.build()
-    }
-
-    @Bean
-    fun appSecurityFilterChain(
-        http: HttpSecurity,
-        authenticationManager: AuthenticationManager,
-    ): SecurityFilterChain {
-        http.securityMatcher("/api/**")
-            .csrf { it.disable() }
-            .authorizeHttpRequests {
-                it.requestMatchers("/api/diary").authenticated()
-            }
-            .exceptionHandling {
-                it.authenticationEntryPoint(CustomAuthenticationEntryPoint())
-            }
-            .addFilterBefore(OriginalJwtAuthenticationFilter(authenticationManager), AnonymousAuthenticationFilter::class.java)
-        return http.build()
-    }
-}
-
-@Configuration
-class OriginalJwtAuthenticationConfig {
-    @Bean
-    fun originalJwtAuthenticationProvider(originalJwtDecoder: OriginalJwtDecoder): OriginalJwtAuthenticationProvider {
-        return OriginalJwtAuthenticationProvider(originalJwtDecoder)
-    }
-
-    @Bean
-    fun authenticationManager(
-        authenticationProviders: List<AuthenticationProvider>
-    ): AuthenticationManager {
-        return ProviderManager(authenticationProviders)
     }
 }
 

@@ -20,22 +20,7 @@ class DefaultOriginalJwtEncoder(
     @Value("\${app.jwt.issuer}")
     private val issuer: String,
 ): OriginalJwtEncoder {
-    private val key = Keys.hmacShaKeyFor(secret.toByteArray())
     override fun encode(userRecord: UserRecord): String {
-        val issuedAt = System.currentTimeMillis()
-        val expiresAt = issuedAt + expirationTime * 1000
-        val claims = Jwts.claims()
-            .id(UUID.randomUUID().toString())
-            .subject(userRecord.subject)
-            .expiration(Date(expiresAt))
-            .issuer(issuer)
-            .issuedAt(Date(issuedAt))
-            .add("name", userRecord.username)
-            .add("userId", userRecord.id)
-            .build()
-        return Jwts.builder()
-            .claims(claims)
-            .signWith(key)
-            .compact()
+        TODO("Not yet implemented")
     }
 }

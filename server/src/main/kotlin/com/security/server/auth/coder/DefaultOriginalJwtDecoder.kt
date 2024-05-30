@@ -21,19 +21,6 @@ class DefaultOriginalJwtDecoder(
     private val key = Keys.hmacShaKeyFor(secret.toByteArray())
 
     override fun decode(accessToken: String): UserRecord {
-        val result = Jwts.parser()
-            .verifyWith(key)
-            .requireIssuer(issuer)
-            .build()
-            .parseSignedClaims(accessToken)
-
-        val userId = result.payload["userId"] as String
-        val userName = result.payload["name"] as String
-        val subject = result.payload.subject as String
-        return UserRecord(
-            id = UUID.fromString(userId),
-            username = userName,
-            subject = subject
-        )
+        TODO("Not yet implemented")
     }
 }

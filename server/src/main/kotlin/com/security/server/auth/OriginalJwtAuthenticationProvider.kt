@@ -10,18 +10,10 @@ class OriginalJwtAuthenticationProvider(
     private val jwtDecoder: OriginalJwtDecoder
 ): AuthenticationProvider {
     override fun authenticate(authentication: Authentication): Authentication {
-        val accessToken = (authentication as OriginalJwtAuthentication).credentials
-        try {
-            val userRecord = jwtDecoder.decode(accessToken)
-            val authenticatedToken = OriginalJwtAuthentication.authenticated(userRecord)
-            authenticatedToken.isAuthenticated = true
-            return authenticatedToken
-        } catch(exception: Exception) {
-            throw BadCredentialsException("Invalid access token", exception)
-        }
+        TODO("Not yet implemented")
     }
 
     override fun supports(authentication: Class<*>): Boolean {
-        return OriginalJwtAuthentication::class.java.isAssignableFrom(authentication)
+        TODO("Not yet implemented")
     }
 }
