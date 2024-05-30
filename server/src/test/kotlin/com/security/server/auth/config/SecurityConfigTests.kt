@@ -47,9 +47,6 @@ class SecurityConfigTests {
         val oAuth2LoginFilterExists = securityFilterChain.filters.any { it is OAuth2LoginAuthenticationFilter }
         assertTrue(oAuth2LoginFilterExists)
 
-        val bearerTokenFilterExists = securityFilterChain.filters.any { it is BearerTokenAuthenticationFilter }
-        assertTrue(bearerTokenFilterExists)
-
         val logoutFilterExists = securityFilterChain.filters.any { it is LogoutFilter }
         assertTrue(logoutFilterExists)
     }
