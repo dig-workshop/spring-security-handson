@@ -4,9 +4,9 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
-data class AcquireAccessTokenAuthentication(
+data class SocialLoginAuthentication(
     private val credentials: String,
-    private val principal: AcquireAccessTokenUser,
+    private val principal: SocialLoginUser,
 ): Authentication {
     private var isAuthenticated: Boolean = true
 

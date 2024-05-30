@@ -1,6 +1,6 @@
 package com.security.server.auth.authentication
 
-data class AcquireAccessTokenUser(
+data class SocialLoginUser(
     val subject: String,
     val name: String,
 )

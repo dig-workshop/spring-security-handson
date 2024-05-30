@@ -26,6 +26,13 @@ class SecurityConfigTests {
     @Autowired
     private lateinit var context: WebApplicationContext
 
+    private lateinit var securityFilterChain: SecurityFilterChain
+
+    @BeforeEach
+    fun setUp() {
+        securityFilterChain = context.getBean("securityFilterChain", SecurityFilterChain::class.java)
+    }
+
     @Test
     fun ログアウト成功後のリダイレクト先が正しく設定されている() {
         val mockMvc = MockMvcBuilders

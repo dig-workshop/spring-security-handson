@@ -1,6 +1,6 @@
 package com.security.server.auth
 
-import com.security.server.auth.authentication.AcquireAccessTokenUser
+import com.security.server.auth.authentication.SocialLoginUser
 import com.security.server.auth.service.UserService
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,7 +14,7 @@ class UserController(
 ) {
     @GetMapping("/me")
     fun me(authentication: Authentication): UserResponse {
-        val acquireAccessTokenUser = authentication.principal as AcquireAccessTokenUser
-        return userService.createOrGet(acquireAccessTokenUser)
+        val socialLoginUser = authentication.principal as SocialLoginUser
+        return userService.createOrGet(socialLoginUser)
     }
 }
