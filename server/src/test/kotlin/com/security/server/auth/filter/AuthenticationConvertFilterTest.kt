@@ -2,8 +2,6 @@ package com.security.server.auth.filter
 
 import com.security.server.auth.authentication.AcquireAccessTokenAuthentication
 import com.security.server.auth.authentication.AcquireAccessTokenUser
-import com.security.server.auth.authentication.OriginalJwtAuthentication
-import com.security.server.auth.entity.UserRecord
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.mock.web.MockHttpServletRequest
@@ -102,29 +100,4 @@ class AuthenticationConvertFilterTest {
         assertEquals(mockResponse, spyFilterChain.doFilter_argument_response)
     }
 
-    @Test
-    fun OriginalJwtAuthenticationをAcquireAccessTokenAuthenticationに変換してContextHolderにセットする() {
-        val filter = AuthenticationConvertFilter()
-        val mockRequest = MockHttpServletRequest()
-        val mockResponse = MockHttpServletResponse()
-        val spyFilterChain = SpyFilterChain()
-        val context = SecurityContextHolder.getContext()
-        context.authentication = OriginalJwtAuthentication(
-            "",
-            UserRecord(subject = "subject", username = "user name")
-        )
-
-
-        filter.doFilter(mockRequest, mockResponse, spyFilterChain)
-
-
-        val authentication = SecurityContextHolder.getContext().authentication
-        assertTrue(authentication is AcquireAccessTokenAuthentication)
-        assertEquals("", authentication.credentials)
-        val principal = authentication.principal as AcquireAccessTokenUser
-        assertEquals("subject", principal.subject)
-        assertEquals("user name", principal.name)
-        assertEquals(mockRequest, spyFilterChain.doFilter_argument_request)
-        assertEquals(mockResponse, spyFilterChain.doFilter_argument_response)
-    }
 }

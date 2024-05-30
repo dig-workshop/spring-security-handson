@@ -1,11 +1,8 @@
 package com.security.server.auth.service
 
-import com.security.server.auth.entity.UserRecord
 import com.security.server.auth.UserRepository
 import com.security.server.auth.authentication.AcquireAccessTokenUser
-import com.security.server.auth.coder.DummyOriginalJwtEncoder
-import com.security.server.auth.coder.SpyOriginalJwtEncoder
-import com.security.server.auth.coder.StubOriginalJwtEncoder
+import com.security.server.auth.entity.UserRecord
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +29,7 @@ class DefaultUserServiceTest {
             ),
         )
         userRepository.saveAll(userRecords)
-        val userService = DefaultUserService(userRepository, DummyOriginalJwtEncoder())
+        val userService = DefaultUserService(userRepository)
 
 
         val userResponse = userService.createOrGet(AcquireAccessTokenUser("subject2", ""))
@@ -44,7 +41,7 @@ class DefaultUserServiceTest {
     @Test
     fun ユーザーが存在していなければIDとユーザー名を保存する() {
         userRepository.deleteAll()
-        val userService = DefaultUserService(userRepository, DummyOriginalJwtEncoder())
+        val userService = DefaultUserService(userRepository)
 
 
         userService.createOrGet(AcquireAccessTokenUser("subject", "new user"))
@@ -54,35 +51,5 @@ class DefaultUserServiceTest {
         assertEquals(1, userRecords.size)
         assertEquals("subject", userRecords.first().subject)
         assertEquals("new user", userRecords.first().username)
-    }
-
-    @Test
-    fun JwtEncoderにユーザー情報を渡してアクセストークンを生成する() {
-        val savedUserRecord = userRepository.save(
-            UserRecord(UUID.randomUUID(), "subject", "saved user")
-        )
-        val spyJwtEncoder = SpyOriginalJwtEncoder()
-        val userService = DefaultUserService(userRepository, spyJwtEncoder)
-
-
-        userService.createOrGet(AcquireAccessTokenUser("subject", "new user"))
-
-
-        assertEquals(savedUserRecord.id, spyJwtEncoder.encode_argument_userRecord?.id)
-        assertEquals("subject", spyJwtEncoder.encode_argument_userRecord?.subject)
-        assertEquals("saved user", spyJwtEncoder.encode_argument_userRecord?.username)
-    }
-
-    @Test
-    fun JwtEncoderによって生成されたアクセストークンを返す() {
-        val stubJwtEncoder = StubOriginalJwtEncoder()
-        stubJwtEncoder.encode_returnValue = "access token"
-        val userService = DefaultUserService(userRepository, stubJwtEncoder)
-
-
-        val userResponse = userService.createOrGet(AcquireAccessTokenUser("", ""))
-
-
-        assertEquals("access token", userResponse.accessToken)
     }
 }

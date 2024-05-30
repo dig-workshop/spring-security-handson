@@ -73,7 +73,7 @@ class UserControllerTests {
 	@Test
 	fun サービスの返り値を返す() {
 		val stubUserService = StubUserService()
-		stubUserService.createOrGet_returnValue = UserResponse(name = "Yusuke", accessToken = "accessToken")
+		stubUserService.createOrGet_returnValue = UserResponse(name = "Yusuke")
 		val mockMvc = buildMvcWith(stubUserService)
 		val user = oidcUser()
 
@@ -86,7 +86,6 @@ class UserControllerTests {
 		result.andExpect {
 			status { isOk() }
 			jsonPath("$.name", equalTo("Yusuke"))
-			jsonPath("$.accessToken", equalTo("accessToken"))
 		}
 	}
 
