@@ -1,7 +1,6 @@
 package com.security.server.auth.config
 
 import com.security.server.auth.AuthHelper.Companion.oidcUser
-import com.security.server.auth.filter.AuthenticationConvertFilter
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -53,9 +52,6 @@ class SecurityConfigTests {
 
         val logoutFilterExists = securityFilterChain.filters.any { it is LogoutFilter }
         assertTrue(logoutFilterExists)
-
-        val convertFilterExist = securityFilterChain.filters.any { it is AuthenticationConvertFilter }
-        assertTrue(convertFilterExist)
     }
 
     @Test

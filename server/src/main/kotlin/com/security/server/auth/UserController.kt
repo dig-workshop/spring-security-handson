@@ -1,8 +1,8 @@
 package com.security.server.auth
 
-import com.security.server.auth.authentication.AcquireAccessTokenUser
 import com.security.server.auth.service.UserService
 import org.springframework.security.core.Authentication
+import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -14,7 +14,7 @@ class UserController(
 ) {
     @GetMapping("/me")
     fun me(authentication: Authentication): UserResponse {
-        val acquireAccessTokenUser = authentication.principal as AcquireAccessTokenUser
-        return userService.createOrGet(acquireAccessTokenUser)
+        val oidcUser = authentication.principal as OidcUser
+        return userService.createOrGet(oidcUser.subject, oidcUser.getClaimAsString("name"))
     }
 }

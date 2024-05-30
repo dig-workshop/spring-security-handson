@@ -1,7 +1,6 @@
 package com.security.server.auth.service
 
 import com.security.server.auth.UserRepository
-import com.security.server.auth.authentication.AcquireAccessTokenUser
 import com.security.server.auth.entity.UserRecord
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -32,7 +31,7 @@ class DefaultUserServiceTest {
         val userService = DefaultUserService(userRepository)
 
 
-        val userResponse = userService.createOrGet(AcquireAccessTokenUser("subject2", ""))
+        val userResponse = userService.createOrGet("subject2", "")
 
 
         assertEquals("correct user", userResponse.name)
@@ -44,7 +43,7 @@ class DefaultUserServiceTest {
         val userService = DefaultUserService(userRepository)
 
 
-        userService.createOrGet(AcquireAccessTokenUser("subject", "new user"))
+        userService.createOrGet("subject", "new user")
         val userRecords = userRepository.findAll()
 
 
