@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter
-import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.logout.LogoutFilter
@@ -21,9 +20,15 @@ import org.springframework.web.context.WebApplicationContext
 
 @SpringBootTest
 class SecurityConfigTests {
-
     @Autowired
     private lateinit var context: WebApplicationContext
+
+    private lateinit var securityFilterChain: SecurityFilterChain
+
+    @BeforeEach
+    fun setUp() {
+        securityFilterChain = context.getBean("securityFilterChain", SecurityFilterChain::class.java)
+    }
 
     @Test
     fun ログアウト成功後のリダイレクト先が正しく設定されている() {

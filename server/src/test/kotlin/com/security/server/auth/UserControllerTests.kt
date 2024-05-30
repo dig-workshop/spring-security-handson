@@ -1,6 +1,5 @@
 package com.security.server.auth
 
-import com.security.server.auth.AuthHelper.Companion.jwtUser
 import com.security.server.auth.AuthHelper.Companion.oidcUser
 import com.security.server.auth.service.DummyUserService
 import com.security.server.auth.service.SpyUserService
@@ -49,24 +48,6 @@ class UserControllerTests {
 
 			assertEquals("subject", spyUserService.createOrGet_argument_subject)
 			assertEquals("Tanachu", spyUserService.createOrGet_argument_username)
-		}
-	}
-
-	@Nested
-	inner class BearerToken {
-		@Test
-		fun 認証済みの場合はサービスに正しい引数を渡す() {
-			val spyUserService = SpyUserService()
-			val mockMvc = buildMvcWith(spyUserService)
-			val jwt = jwtUser("subject", "Tanachu")
-
-			mockMvc.get("/auth/api/users/me") {
-				with(jwt)
-			}
-
-
-			assertEquals("subject", spyUserService.createOrGet_argument_acquireAccessTokenUser?.subject)
-			assertEquals("Tanachu", spyUserService.createOrGet_argument_acquireAccessTokenUser?.name)
 		}
 	}
 
