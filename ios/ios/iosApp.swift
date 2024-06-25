@@ -3,18 +3,26 @@ import GoogleSignIn
 
 @main
 struct iosApp: App {
-    @State private var user: GIDGoogleUser? = nil
+    @State private var username: String? = nil
+    
+    let userRepository = UserRepository()
     
     var body: some Scene {
         WindowGroup {
-            ContentView(user: $user)
+            ContentView(username: $username, userRepository: userRepository)
                 .onOpenURL { url in
                   GIDSignIn.sharedInstance.handle(url)
                 }
                 .onAppear {
-                    GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+                    GIDSignIn.sharedInstance.restorePreviousSignIn { maybeUser, error in
                         if error != nil { return }
-                        self.user = user
+                        guard let user = maybeUser else { return }
+                        Task {
+                            let username = await self.userRepository.getUsername(of: user)
+                            DispatchQueue.main.async {
+                                self.username = username
+                            }
+                        }
                     }
                 }
         }

@@ -24,6 +24,7 @@ class SecurityConfig {
             .oauth2Login {
                 it.defaultSuccessUrl("http://localhost:5173", true)
             }
+            .oauth2ResourceServer { it.jwt {} }
             .exceptionHandling {
                 it.authenticationEntryPoint(CustomAuthenticationEntryPoint())
             }
