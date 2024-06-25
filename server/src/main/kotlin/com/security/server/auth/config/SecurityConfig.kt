@@ -1,5 +1,6 @@
 package com.security.server.auth.config
 
+import com.security.server.auth.filter.AuthenticationConvertFilter
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +33,7 @@ class SecurityConfig {
             .logout {
                 it.logoutSuccessUrl("http://localhost:5173")
             }
+            .addFilterBefore(AuthenticationConvertFilter(), AnonymousAuthenticationFilter::class.java)
         return http.build()
     }
 }
