@@ -25,19 +25,19 @@ class AuthenticationConvertFilter: OncePerRequestFilter() {
         }
         if (authentication is JwtAuthenticationToken) {
             val jwt = authentication.principal as Jwt
-            val acquireAccessTokenUser = SocialLoginUser(jwt.subject, jwt.getClaimAsString("name"))
-            setAcquireAccessTokenAuthenticationToContext(acquireAccessTokenUser)
+            val socialLoginUser = SocialLoginUser(jwt.subject, jwt.getClaimAsString("name"))
+            setAcquireAccessTokenAuthenticationToContext(socialLoginUser)
         }
         if (authentication is OAuth2AuthenticationToken) {
             val oidcUser = authentication.principal as OidcUser
-            val acquireAccessTokenUser = SocialLoginUser(oidcUser.subject, oidcUser.getClaimAsString("name"))
-            setAcquireAccessTokenAuthenticationToContext(acquireAccessTokenUser)
+            val socialLoginUser = SocialLoginUser(oidcUser.subject, oidcUser.getClaimAsString("name"))
+            setAcquireAccessTokenAuthenticationToContext(socialLoginUser)
         }
         filterChain.doFilter(request, response)
     }
 
-    private fun setAcquireAccessTokenAuthenticationToContext(acquireAccessTokenUser: SocialLoginUser) {
-        val acquireAccessTokenAuthentication = SocialLoginAuthentication("", acquireAccessTokenUser)
+    private fun setAcquireAccessTokenAuthenticationToContext(socialLoginUser: SocialLoginUser) {
+        val acquireAccessTokenAuthentication = SocialLoginAuthentication("", socialLoginUser)
         val context = SecurityContextHolder.getContext()
         context.authentication = acquireAccessTokenAuthentication
     }
