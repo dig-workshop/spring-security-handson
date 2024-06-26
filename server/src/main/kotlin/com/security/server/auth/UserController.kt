@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/auth/api/users")
 class UserController(
+
     private val userService: UserService,
 ) {
     @GetMapping("/me")
