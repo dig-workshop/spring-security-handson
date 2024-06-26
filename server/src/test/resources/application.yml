@@ -1,4 +1,11 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "dummy-client-id"
+            client-secret: "dummy-client-secret"
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:security-test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false;MODE=PostgreSQL
