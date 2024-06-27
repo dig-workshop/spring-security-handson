@@ -70,6 +70,7 @@ $ make start
 `your_web_app_client_id`にはWebアプリ用に作成したクライアントIDを、それぞれ書き換えてください。
 
 ドットで反転させる例: `hoge-fuga.apps.googleusercontent.com` -> `com.googleusercontent.apps.hoge-fuga`
+
 4. ターミナルで以下を実行し、XcodeでiOSプロジェクトを開きます。
 ```shell
 $ cd ios
