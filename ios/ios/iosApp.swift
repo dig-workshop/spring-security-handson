@@ -4,7 +4,7 @@ import GoogleSignIn
 @main
 struct iosApp: App {
     @State private var username: String? = nil
-    
+
     let userRepository = UserRepository()
     
     var body: some Scene {
