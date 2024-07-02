@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.AnonymousAuthenticationFi
 class SecurityConfig {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http.securityMatcher("/oauth2/authorization/**", "/login/oauth2/code/**", "/auth/api/users/me", "/logout")
+        http
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers("/auth/api/users/me").authenticated()
