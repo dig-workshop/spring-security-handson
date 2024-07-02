@@ -22,6 +22,6 @@ class OriginalJwtAuthenticationProvider(
     }
 
     override fun supports(authentication: Class<*>): Boolean {
-        return OriginalJwtAuthentication::class.java.isAssignableFrom(authentication)
+        return authentication == OriginalJwtAuthentication::class.java
     }
 }
