@@ -1,6 +1,10 @@
 spring:
   security:
     oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: "https://hoge.com"
+          issuer-uri: "https://hoge.com"
       client:
         registration:
           google:
