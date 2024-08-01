@@ -37,8 +37,8 @@ class AuthenticationConvertFilter: OncePerRequestFilter() {
     }
 
     private fun setSocialLoginAuthenticationToContext(socialLoginUser: SocialLoginUser) {
-        val acquireAccessTokenAuthentication = SocialLoginAuthentication("", socialLoginUser)
+        val socialLoginTokenAuthentication = SocialLoginAuthentication("", socialLoginUser)
         val context = SecurityContextHolder.getContext()
-        context.authentication = acquireAccessTokenAuthentication
+        context.authentication = socialLoginTokenAuthentication
     }
 }
