@@ -17,7 +17,7 @@ class OriginalJwtAuthenticationProviderTest {
     @Nested
     inner class Authenticate {
         @Test
-        fun JwtDecoderの返り値がprincipalに入ったUserRecordJwtAuthenticationTokenを返す() {
+        fun JwtDecoderの返り値がprincipalに入ったOriginalJwtAuthenticationTokenを返す() {
             val stubDecoder = StubOriginalJwtDecoder()
             val expectedPrincipal = UserRecord(subject = "subject", username = "user name")
             stubDecoder.decode_returnValue = expectedPrincipal

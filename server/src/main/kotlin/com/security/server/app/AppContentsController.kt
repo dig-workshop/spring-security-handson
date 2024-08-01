@@ -15,7 +15,7 @@ class AppContentsController {
         return listOf(
             "${user.username}は、朝ごはんにパンを食べました",
             "${user.username}は、昼ごはんにラーメンを食べました",
-            "${user.username}は、夜ごはんに唐揚げをたべました"
+            "${user.username}は、夜ごはんに唐揚げを食べました"
         )
     }
 }
